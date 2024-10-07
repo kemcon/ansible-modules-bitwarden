@@ -127,7 +127,10 @@ class Bitwarden(object):
             else:
                 raise AnsibleError("Unknown failure in 'bw' command: "
                                    "{0}".format(out))
-        return out.strip()
+        # Necessary because "Event post failed.\n" is incorrectly added to the result
+        # This seems to be an issue with telemetry data being sent with an expired timestamp
+        # See https://github.com/bitwarden/clients/issues/10413
+        return out.removesuffix("Event post failed.\n").strip()
 
     def sync(self):
         self._run(['sync'])
