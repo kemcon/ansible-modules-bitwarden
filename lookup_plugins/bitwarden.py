@@ -196,9 +196,7 @@ class Bitwarden(object):
 
     def __searchForIdWithKeys(self, key, organization, collection, keys):
         # find first in the organisation and collection
-        allDataResult = self._run(["list", "items", "--search"] + keys)
-        print(allDataResult)
-        allData = json.loads(allDataResult)
+        allData = json.loads(self._run(["list", "items", "--search"] + keys))
         firstFound = False
         for data in allData:
             if data['name'] != key:
