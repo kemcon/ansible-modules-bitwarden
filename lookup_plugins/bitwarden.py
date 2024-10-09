@@ -130,7 +130,8 @@ class Bitwarden(object):
         # Necessary because "Event post failed.\n" is incorrectly added to the result
         # This seems to be an issue with telemetry data being sent with an expired timestamp
         # See https://github.com/bitwarden/clients/issues/10413
-        return out.removesuffix("Event post failed.\n").strip()
+        weirdErrorMessage = "Event post failed.\n"
+        return out.removeprefix(weirdErrorMessage).removesuffix(weirdErrorMessage).strip()
 
     def sync(self):
         self._run(['sync'])
@@ -195,7 +196,9 @@ class Bitwarden(object):
 
     def __searchForIdWithKeys(self, key, organization, collection, keys):
         # find first in the organisation and collection
-        allData = json.loads(self._run(["list", "items", "--search"] + keys))
+        allDataResult = self._run(["list", "items", "--search"] + keys)
+        print(allDataResult)
+        allData = json.loads(allDataResult)
         firstFound = False
         for data in allData:
             if data['name'] != key:
